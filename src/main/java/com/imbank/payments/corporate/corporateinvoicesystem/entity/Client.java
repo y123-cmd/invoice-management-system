@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "corporate_client")
-public class CorporateClient {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
@@ -42,19 +42,17 @@ public class CorporateClient {
     @Column(name = "client_type", nullable = false)
     private ClientType clientType;
     @Column(name = "created_at",nullable = false,  updatable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
     @PrePersist
     protected void onCreate() {
-        this.created_at = LocalDateTime.now();
-        this.updated_at = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
     @PreUpdate
     protected void onUpdate() {
-        this.updated_at = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
-
-
 
 }

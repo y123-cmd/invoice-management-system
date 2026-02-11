@@ -1,13 +1,13 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.dto;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,12 +17,17 @@ import java.time.LocalDateTime;
 public class ClientDTO {
     private Long clientId;
 
+
+    @NotNull(message = "client type is required")
+    private ClientType clientType;
+
+
     @NotBlank(message = "company name required")
     @Size(max = 255, message = "company cannot exceed 255 characters")
     private String companyName;
 
-    @NotBlank(message = "Registration number is required")
-    @Size(max = 100, message = "Registartion number must not exceed 100 characters")
+
+    @Size(max = 100, message = "Registration number must not exceed 100 characters")
     private String registrationNumber;
 
     @NotBlank(message = "Email is required")
