@@ -5,6 +5,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
+import com.imbank.payments.corporate.corporateinvoicesystem.exception.DuplicateResourceException;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.AccountMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.AccountRepository;
@@ -35,10 +36,19 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Client", "id", accountRequest.getClientId()
                 ));
-
+        boolean accountExists = accountRepository.existsByClient_ClientIdAndAccountType(
+                accountRequest.getClientId(),
+                accountRequest.getAccountType()
+        );
+        if (accountExists) {
+            throw new DuplicateResourceException(
+                    String.format("Client with ID %d already has a %s account",
+                            accountRequest.getClientId(),
+                            accountRequest.getAccountType())
+            );
+        }
 
         String accountNumber = AccountNumberGenerator.generate();
-
 
         Account account = new Account();
         account.setAccountNumber(accountNumber);
