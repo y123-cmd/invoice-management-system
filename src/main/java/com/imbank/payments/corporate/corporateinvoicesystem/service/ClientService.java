@@ -1,18 +1,26 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientDTO;
+
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 
 import java.util.List;
 
 public interface ClientService {
-    ClientDTO createClient(ClientDTO dto);
-    List<ClientDTO> getAllClients();
-    ClientDTO getClientById(Long id);
+
+    ClientResponse createClient(ClientRequest request);
+
+    List<ClientResponse> getAllClients();
+
+    ClientResponse getClientById(Long id);
+
     void deleteClient(Long id);
-    List<ClientDTO> getActiveClients();
-    ClientDTO updateClientStatus(Long id, AccountStatus status);
-    ClientDTO updateClient(Long id, ClientDTO dto);
-    ClientDTO findByRegistrationNumber(String registrationNumber);
 
+    List<ClientResponse> getActiveClients();
 
+    ClientResponse updateClientStatus(Long id, AccountStatus status);
+
+    ClientResponse updateClient(Long id, ClientRequest request);
+
+    ClientResponse findByRegistrationNumber(String registrationNumber);
 }

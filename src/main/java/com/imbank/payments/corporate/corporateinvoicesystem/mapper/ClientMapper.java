@@ -1,36 +1,39 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.mapper;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientDTO;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClientMapper {
 
-    public CorporateClient toEntity(ClientDTO dto) {
+
+    public CorporateClient toEntity(ClientRequest request) {
         CorporateClient entity = new CorporateClient();
-        entity.setCompanyName(dto.getCompanyName());
-        entity.setRegistrationNumber(dto.getRegistrationNumber());
-        entity.setEmail(dto.getEmail());
-        entity.setPhone(dto.getPhone());
-        entity.setCreditLimit(dto.getCreditLimit());
-        entity.setAccountStatus(dto.getAccountStatus());
-        entity.setClientType(dto.getClientType());
+        entity.setClientType(request.getClientType());
+        entity.setCompanyName(request.getCompanyName());
+        entity.setRegistrationNumber(request.getRegistrationNumber());
+        entity.setEmail(request.getEmail());
+        entity.setPhone(request.getPhone());
+        entity.setCreditLimit(request.getCreditLimit());
+
         return entity;
     }
 
-    public ClientDTO toDTO(CorporateClient entity) {
-        ClientDTO dto = new ClientDTO();
-        dto.setClientId(entity.getClientId());
-        dto.setCompanyName(entity.getCompanyName());
-        dto.setRegistrationNumber(entity.getRegistrationNumber());
-        dto.setEmail(entity.getEmail());
-        dto.setPhone(entity.getPhone());
-        dto.setCreditLimit(entity.getCreditLimit());
-        dto.setAccountStatus(entity.getAccountStatus());
-        dto.setCreatedAt(entity.getCreated_at());
-        dto.setUpdatedAt(entity.getUpdated_at());
-        dto.setClientType(entity.getClientType());
-        return dto;
+
+    public ClientResponse toResponse(CorporateClient entity) {
+        ClientResponse response = new ClientResponse();
+        response.setClientId(entity.getClientId());
+        response.setClientType(entity.getClientType());
+        response.setCompanyName(entity.getCompanyName());
+        response.setRegistrationNumber(entity.getRegistrationNumber());
+        response.setEmail(entity.getEmail());
+        response.setPhone(entity.getPhone());
+        response.setCreditLimit(entity.getCreditLimit());
+        response.setAccountStatus(entity.getAccountStatus());
+        response.setCreatedAt(entity.getCreated_at());
+        response.setUpdatedAt(entity.getUpdated_at());
+        return response;
     }
 }

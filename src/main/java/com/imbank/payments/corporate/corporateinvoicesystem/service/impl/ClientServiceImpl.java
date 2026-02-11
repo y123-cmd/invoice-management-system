@@ -1,11 +1,14 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientDTO;
+
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.ClientMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,46 +25,62 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDTO createClient(ClientDTO dto) {
-        CorporateClient entity = clientMapper.toEntity(dto);
+    @Transactional
+    public ClientResponse createClient(ClientRequest request) {
+
+        CorporateClient entity = clientMapper.toEntity(request);
+
+        entity.setAccountStatus(AccountStatus.ACTIVE);
+
+
         CorporateClient savedEntity = clientRepository.save(entity);
-        return clientMapper.toDTO(savedEntity);
+
+
+        return clientMapper.toResponse(savedEntity);
     }
 
     @Override
-    public List<ClientDTO> getAllClients() {
-        return clientRepository.findAll().stream()
-                .map(clientMapper::toDTO)
+    public List<ClientResponse> getAllClients() {
+        return clientRepository.findAll()
+                .stream()
+                .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ClientDTO getClientById(Long id) {
+    public ClientResponse getClientById(Long id) {
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found with id: " + id));
-        return clientMapper.toDTO(entity);
+                .orElseThrow(() -> new RuntimeException(
+                        "Client not found with id: " + id
+                ));
+        return clientMapper.toResponse(entity);
     }
 
     @Override
-    public ClientDTO updateClient(Long id, ClientDTO dto) {
+    @Transactional
+    public ClientResponse updateClient(Long id, ClientRequest request) {
+
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found with id: " + id));
-
-        entity.setCompanyName(dto.getCompanyName());
-        entity.setEmail(dto.getEmail());
-        entity.setRegistrationNumber(dto.getRegistrationNumber());
-        entity.setCreditLimit(dto.getCreditLimit());
-        entity.setPhone(dto.getPhone());
-        entity.setAccountStatus(dto.getAccountStatus());
-        entity.setClientType(dto.getClientType());
+                .orElseThrow(() -> new RuntimeException(
+                        "Client not found with id: " + id
+                ));
 
 
+        entity.setClientType(request.getClientType());
+        entity.setCompanyName(request.getCompanyName());
+        entity.setRegistrationNumber(request.getRegistrationNumber());
+        entity.setEmail(request.getEmail());
+        entity.setPhone(request.getPhone());
+        entity.setCreditLimit(request.getCreditLimit());
 
         CorporateClient savedEntity = clientRepository.save(entity);
-        return clientMapper.toDTO(savedEntity);
+
+
+        return clientMapper.toResponse(savedEntity);
     }
 
     @Override
+    @Transactional
     public void deleteClient(Long id) {
         if (!clientRepository.existsById(id)) {
             throw new RuntimeException("Client not found with id: " + id);
@@ -70,27 +89,32 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientDTO> getActiveClients() {
+    public List<ClientResponse> getActiveClients() {
         return clientRepository.findByAccountStatus(AccountStatus.ACTIVE)
                 .stream()
-                .map(clientMapper::toDTO)
+                .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ClientDTO updateClientStatus(Long id, AccountStatus status) {
+    @Transactional
+    public ClientResponse updateClientStatus(Long id, AccountStatus status) {
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(
+                        "Client not found with id: " + id
+                ));
 
         entity.setAccountStatus(status);
         CorporateClient savedEntity = clientRepository.save(entity);
-        return clientMapper.toDTO(savedEntity);
+        return clientMapper.toResponse(savedEntity);
     }
 
     @Override
-    public ClientDTO findByRegistrationNumber(String registrationNumber) {
+    public ClientResponse findByRegistrationNumber(String registrationNumber) {
         CorporateClient entity = clientRepository.findByRegistrationNumber(registrationNumber)
-                .orElseThrow(() -> new RuntimeException("Client not found with registration number: " + registrationNumber));
-        return clientMapper.toDTO(entity);
+                .orElseThrow(() -> new RuntimeException(
+                        "Client not found with registration number: " + registrationNumber
+                ));
+        return clientMapper.toResponse(entity);
     }
 }

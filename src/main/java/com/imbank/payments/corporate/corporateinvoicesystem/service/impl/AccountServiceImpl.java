@@ -1,6 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountDTO;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
@@ -27,60 +28,70 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public AccountDTO createAccount(AccountDTO accountDTO) {
-        CorporateClient client = clientRepository.findById(accountDTO.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found with ID: " + accountDTO.getClientId()));
+    public AccountResponse createAccount(AccountRequest accountRequest) {
 
-        String accountNumber = accountNumberGenerator.generate();
+        CorporateClient client = clientRepository.findById(accountRequest.getClientId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Client not found with ID: " + accountRequest.getClientId()
+                ));
+
+
+        String accountNumber = AccountNumberGenerator.generate();
 
         Account account = new Account();
         account.setAccountNumber(accountNumber);
-        account.setAccountType(accountDTO.getAccountType());
-        account.setBalance(accountDTO.getBalance());
+        account.setAccountType(accountRequest.getAccountType());
+        account.setBalance(accountRequest.getBalance());
         account.setStatus(AccountStatus.ACTIVE);
         account.setClient(client);
 
 
         Account savedAccount = accountRepository.save(account);
-        return accountMapper.toDTO(savedAccount);
+
+
+        return accountMapper.toResponse(savedAccount);
     }
 
     @Override
-    public List<AccountDTO> getAllAccounts() {
+    public List<AccountResponse> getAllAccounts() {
         return accountRepository.findAll()
                 .stream()
-                .map(accountMapper::toDTO)
+                .map(accountMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public AccountDTO getAccountById(Long id) {
+    public AccountResponse getAccountById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
-        return accountMapper.toDTO(account);
+                .orElseThrow(() -> new RuntimeException(
+                        "Account not found with ID: " + id
+                ));
+        return accountMapper.toResponse(account);
     }
 
     @Override
-    public List<AccountDTO> getAccountsByClientId(Long clientId) {
+    public List<AccountResponse> getAccountsByClientId(Long clientId) {
         return accountRepository.findByClient_ClientId(clientId)
                 .stream()
-                .map(accountMapper::toDTO)
+                .map(accountMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public AccountDTO updateAccount(Long id, AccountDTO accountDTO) {
+    public AccountResponse updateAccount(Long id, AccountRequest accountRequest) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException(
+                        "Account not found with ID: " + id
+                ));
 
-        account.setAccountType(accountDTO.getAccountType());
-        account.setBalance(accountDTO.getBalance());
-        account.setStatus(accountDTO.getStatus());
-        // updatedAt handled by @PreUpdate in Account entity
+
+        account.setAccountType(accountRequest.getAccountType());
+        account.setBalance(accountRequest.getBalance());
+
 
         Account updatedAccount = accountRepository.save(account);
-        return accountMapper.toDTO(updatedAccount);
+        return accountMapper.toResponse(updatedAccount);
     }
 
     @Override
