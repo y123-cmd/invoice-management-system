@@ -5,6 +5,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
+import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.AccountMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.AccountRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
@@ -31,12 +32,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse createAccount(AccountRequest accountRequest) {
 
         CorporateClient client = clientRepository.findById(accountRequest.getClientId())
-                .orElseThrow(() -> new RuntimeException(
-                        "Client not found with ID: " + accountRequest.getClientId()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client", "id", accountRequest.getClientId()
                 ));
 
 
         String accountNumber = AccountNumberGenerator.generate();
+
 
         Account account = new Account();
         account.setAccountNumber(accountNumber);
@@ -63,8 +65,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse getAccountById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Account not found with ID: " + id
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Account", "id", id
                 ));
         return accountMapper.toResponse(account);
     }
@@ -81,8 +83,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountResponse updateAccount(Long id, AccountRequest accountRequest) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Account not found with ID: " + id
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Account", "id", id
                 ));
 
 
@@ -98,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public void deleteAccount(Long id) {
         if (!accountRepository.existsById(id)) {
-            throw new RuntimeException("Account not found with ID: " + id);
+            throw new ResourceNotFoundException("Account", "id", id);
         }
         accountRepository.deleteById(id);
     }

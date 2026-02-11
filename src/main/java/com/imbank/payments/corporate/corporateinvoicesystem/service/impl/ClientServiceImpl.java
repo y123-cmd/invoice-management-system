@@ -4,6 +4,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
+import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.ClientMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
@@ -30,6 +31,7 @@ public class ClientServiceImpl implements ClientService {
 
         CorporateClient entity = clientMapper.toEntity(request);
 
+
         entity.setAccountStatus(AccountStatus.ACTIVE);
 
 
@@ -50,8 +52,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientResponse getClientById(Long id) {
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Client not found with id: " + id
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client", "id", id
                 ));
         return clientMapper.toResponse(entity);
     }
@@ -61,8 +63,8 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse updateClient(Long id, ClientRequest request) {
 
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Client not found with id: " + id
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client", "id", id
                 ));
 
 
@@ -72,6 +74,7 @@ public class ClientServiceImpl implements ClientService {
         entity.setEmail(request.getEmail());
         entity.setPhone(request.getPhone());
         entity.setCreditLimit(request.getCreditLimit());
+
 
         CorporateClient savedEntity = clientRepository.save(entity);
 
@@ -83,7 +86,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void deleteClient(Long id) {
         if (!clientRepository.existsById(id)) {
-            throw new RuntimeException("Client not found with id: " + id);
+            throw new ResourceNotFoundException("Client", "id", id);
         }
         clientRepository.deleteById(id);
     }
@@ -100,8 +103,8 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public ClientResponse updateClientStatus(Long id, AccountStatus status) {
         CorporateClient entity = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Client not found with id: " + id
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client", "id", id
                 ));
 
         entity.setAccountStatus(status);
@@ -112,8 +115,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientResponse findByRegistrationNumber(String registrationNumber) {
         CorporateClient entity = clientRepository.findByRegistrationNumber(registrationNumber)
-                .orElseThrow(() -> new RuntimeException(
-                        "Client not found with registration number: " + registrationNumber
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client", "registrationNumber", registrationNumber
                 ));
         return clientMapper.toResponse(entity);
     }
