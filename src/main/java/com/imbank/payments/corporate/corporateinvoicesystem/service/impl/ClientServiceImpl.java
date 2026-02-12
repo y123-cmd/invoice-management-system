@@ -9,6 +9,8 @@ import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNo
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.ClientMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
+import com.imbank.payments.corporate.corporateinvoicesystem.specification.ClientSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,15 +45,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType,String companyName) {
-        List<CorporateClient>clients = clientRepository.findAll();
-        return clients.stream()
-                .filter(client -> accountStatus == null || client.getAccountStatus().equals(accountStatus))
+    public List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType, String companyName) {
 
-                .filter(client -> clientType == null || client.getClientType().equals(clientType))
+        Specification<CorporateClient> spec = Specification.where(
+                        ClientSpecification.hasAccountStatus(accountStatus))
+                .and(ClientSpecification.hasClientType(clientType))
+                .and(ClientSpecification.hasCompanyNameContaining(companyName));
 
-                .filter(client -> companyName == null ||
-                        client.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
+        return clientRepository.findAll(spec)
+                .stream()
                 .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
     }
