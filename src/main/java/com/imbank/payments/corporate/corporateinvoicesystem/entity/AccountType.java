@@ -5,3 +5,4 @@ public enum AccountType {
     CURRENT,
     FIXED_DEPOSIT
 }
+// describes types of accounts
