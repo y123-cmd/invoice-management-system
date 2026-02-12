@@ -3,6 +3,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.ClientMapper;
@@ -42,9 +43,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientResponse> getAllClients() {
-        return clientRepository.findAll()
-                .stream()
+    public List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType,String companyName) {
+        List<CorporateClient>clients = clientRepository.findAll();
+        return clients.stream()
+                .filter(client -> accountStatus == null || client.getAccountStatus().equals(accountStatus))
+
+                .filter(client -> clientType == null || client.getClientType().equals(clientType))
+
+                .filter(client -> companyName == null ||
+                        client.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
                 .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
     }
