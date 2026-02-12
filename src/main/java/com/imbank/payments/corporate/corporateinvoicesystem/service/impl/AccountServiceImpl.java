@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
 
     private void validateNoDuplicateAccount(Long clientId, AccountType accountType) {
 
-        if (accountType == AccountType.CURRENT || accountType == AccountType.SAVINGS) {
+        if (accountType == AccountType.CURRENT) {
             boolean accountExists = accountRepository.existsByClient_ClientIdAndAccountType(
                     clientId,
                     accountType
