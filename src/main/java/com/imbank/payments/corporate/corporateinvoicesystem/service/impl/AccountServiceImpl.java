@@ -4,6 +4,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.DuplicateResourceException;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
@@ -32,23 +33,18 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountResponse createAccount(AccountRequest accountRequest) {
 
+
         CorporateClient client = clientRepository.findById(accountRequest.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Client", "id", accountRequest.getClientId()
                 ));
-        boolean accountExists = accountRepository.existsByClient_ClientIdAndAccountType(
-                accountRequest.getClientId(),
-                accountRequest.getAccountType()
-        );
-        if (accountExists) {
-            throw new DuplicateResourceException(
-                    String.format("Client with ID %d already has a %s account",
-                            accountRequest.getClientId(),
-                            accountRequest.getAccountType())
-            );
-        }
+
+
+        validateNoDuplicateAccount(accountRequest.getClientId(), accountRequest.getAccountType());
+
 
         String accountNumber = AccountNumberGenerator.generate();
+
 
         Account account = new Account();
         account.setAccountNumber(accountNumber);
@@ -57,11 +53,30 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(AccountStatus.ACTIVE);
         account.setClient(client);
 
-
         Account savedAccount = accountRepository.save(account);
 
-
         return accountMapper.toResponse(savedAccount);
+    }
+
+    private void validateNoDuplicateAccount(Long clientId, AccountType accountType) {
+
+        if (accountType == AccountType.CURRENT || accountType == AccountType.SAVINGS) {
+            boolean accountExists = accountRepository.existsByClient_ClientIdAndAccountType(
+                    clientId,
+                    accountType
+            );
+
+            if (accountExists) {
+                throw new DuplicateResourceException(
+                        String.format("Client with ID %d already has a %s account. " +
+                                        "Only one %s account is allowed per client.",
+                                clientId,
+                                accountType,
+                                accountType)
+                );
+            }
+        }
+
     }
 
     @Override
@@ -97,10 +112,8 @@ public class AccountServiceImpl implements AccountService {
                         "Account", "id", id
                 ));
 
-
         account.setAccountType(accountRequest.getAccountType());
         account.setBalance(accountRequest.getBalance());
-
 
         Account updatedAccount = accountRepository.save(account);
         return accountMapper.toResponse(updatedAccount);
