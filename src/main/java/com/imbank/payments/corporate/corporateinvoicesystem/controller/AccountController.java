@@ -1,5 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.controller;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountDTO;
+
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,37 +15,48 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountService accountService;  // Interface, not implementation!
+    private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO) {
-        AccountDTO createdAccount = accountService.createAccount(accountDTO);
+    public ResponseEntity<AccountResponse> createAccount(
+            @RequestBody AccountRequest accountRequest) {
+
+        AccountResponse createdAccount = accountService.createAccount(accountRequest);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
+
     @GetMapping
-    public ResponseEntity<List<AccountDTO>> getAllAccounts() {
-        List<AccountDTO> accounts = accountService.getAllAccounts();
+    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+        List<AccountResponse> accounts = accountService.getAllAccounts();
         return ResponseEntity.ok(accounts);
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
-        AccountDTO account = accountService.getAccountById(id);
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id) {
+        AccountResponse account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
 
+
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<AccountDTO>> getAccountsByClientId(@PathVariable Long clientId) {
-        List<AccountDTO> accounts = accountService.getAccountsByClientId(clientId);
+    public ResponseEntity<List<AccountResponse>> getAccountsByClientId(
+            @PathVariable Long clientId) {
+
+        List<AccountResponse> accounts = accountService.getAccountsByClientId(clientId);
         return ResponseEntity.ok(accounts);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> updateAccount(@PathVariable Long id, @RequestBody AccountDTO accountDTO) {
-        AccountDTO updatedAccount = accountService.updateAccount(id, accountDTO);
+    public ResponseEntity<AccountResponse> updateAccount(
+            @PathVariable Long id,
+            @RequestBody AccountRequest accountRequest) {
+
+        AccountResponse updatedAccount = accountService.updateAccount(id, accountRequest);
         return ResponseEntity.ok(updatedAccount);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {

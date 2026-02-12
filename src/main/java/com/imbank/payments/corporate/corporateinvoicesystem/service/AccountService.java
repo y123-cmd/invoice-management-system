@@ -1,19 +1,21 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountDTO;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+
 import java.util.List;
 
-public interface AccountService {  // ← Make sure it says "interface" not "class"
+public interface AccountService {
 
-    AccountDTO createAccount(AccountDTO accountDTO);
+    AccountResponse createAccount(AccountRequest accountRequest);
 
-    List<AccountDTO> getAllAccounts();
+    List<AccountResponse> getAllAccounts();
 
-    AccountDTO getAccountById(Long id);
+    AccountResponse getAccountById(Long id);
 
-    List<AccountDTO> getAccountsByClientId(Long clientId);
+    List<AccountResponse> getAccountsByClientId(Long clientId);
 
-    AccountDTO updateAccount(Long id, AccountDTO accountDTO);
+    AccountResponse updateAccount(Long id, AccountRequest accountRequest);
 
     void deleteAccount(Long id);
 }
