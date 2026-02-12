@@ -3,6 +3,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,12 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientResponse>> getAllClients() {
-        List<ClientResponse> clients = clientService.getAllClients();
+    public ResponseEntity<List<ClientResponse>> getAllClients(
+            @RequestParam(required = false) AccountStatus status,
+            @RequestParam(required = false) ClientType clientType,
+            @RequestParam(required = false) String companyName) {
+
+        List<ClientResponse> clients = clientService.getAllClients(status, clientType, companyName);
         return ResponseEntity.ok(clients);
     }
 

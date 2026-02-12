@@ -3,11 +3,14 @@ package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.ClientMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
+import com.imbank.payments.corporate.corporateinvoicesystem.specification.ClientSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +45,14 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientResponse> getAllClients() {
-        return clientRepository.findAll()
+    public List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType, String companyName) {
+
+        Specification<CorporateClient> spec = Specification.where(
+                        ClientSpecification.hasAccountStatus(accountStatus))
+                .and(ClientSpecification.hasClientType(clientType))
+                .and(ClientSpecification.hasCompanyNameContaining(companyName));
+
+        return clientRepository.findAll(spec)
                 .stream()
                 .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
