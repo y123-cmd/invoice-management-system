@@ -2,6 +2,8 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,10 +29,14 @@ public class AccountController {
 
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
-        List<AccountResponse> accounts = accountService.getAllAccounts();
+    public ResponseEntity<List<AccountResponse>> getAllAccounts(
+            @RequestParam(required = false) AccountType accountType,
+            @RequestParam(required = false) AccountStatus status) {
+
+        List<AccountResponse> accounts = accountService.getAllAccounts(accountType, status);
         return ResponseEntity.ok(accounts);
     }
+
 
 
     @GetMapping("/{id}")

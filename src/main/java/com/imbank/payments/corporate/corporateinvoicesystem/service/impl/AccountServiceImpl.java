@@ -11,9 +11,11 @@ import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNo
 import com.imbank.payments.corporate.corporateinvoicesystem.mapper.AccountMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.AccountRepository;
 import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRepository;
+import com.imbank.payments.corporate.corporateinvoicesystem.specification.AccountSpecification;
 import com.imbank.payments.corporate.corporateinvoicesystem.utils.AccountNumberGenerator;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,9 +82,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAllAccounts() {
-        return accountRepository.findAll()
-                .stream()
+    public List<AccountResponse> getAllAccounts(AccountType accountType, AccountStatus status) {
+        Specification<Account> spec = Specification.where(
+                AccountSpecification.hasAccountType(accountType)
+        ).and(AccountSpecification.hasStatus(status));
+
+        List<Account> accounts = accountRepository.findAll(spec);
+
+        return accounts.stream()
                 .map(accountMapper::toResponse)
                 .collect(Collectors.toList());
     }
