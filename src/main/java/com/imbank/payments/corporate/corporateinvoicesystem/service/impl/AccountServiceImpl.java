@@ -134,4 +134,15 @@ public class AccountServiceImpl implements AccountService {
         }
         accountRepository.deleteById(id);
     }
+    @Override
+    @Transactional
+    public AccountResponse updateAccountStatus(Long id, AccountStatus status) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+
+        account.setStatus(status);
+        Account updatedAccount = accountRepository.save(account);
+
+        return accountMapper.toResponse(updatedAccount);
+    }
 }

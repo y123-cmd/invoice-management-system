@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -68,5 +69,14 @@ public class AccountController {
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<AccountResponse> updateAccountStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+
+        String status = request.get("status");
+        AccountResponse updated = accountService.updateAccountStatus(id, AccountStatus.valueOf(status));
+        return ResponseEntity.ok(updated);
     }
 }

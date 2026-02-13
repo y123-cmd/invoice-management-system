@@ -19,5 +19,7 @@ public interface AccountService {
 
     AccountResponse updateAccount(Long id, AccountRequest accountRequest);
 
+    AccountResponse updateAccountStatus(Long id, AccountStatus status);
+
     void deleteAccount(Long id);
 }
