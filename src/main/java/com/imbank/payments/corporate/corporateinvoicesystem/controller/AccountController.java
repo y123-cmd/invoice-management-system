@@ -6,6 +6,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +24,25 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<AccountResponse> createAccount(
             @RequestBody AccountRequest accountRequest) {
-
         AccountResponse createdAccount = accountService.createAccount(accountRequest);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
 
     @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAllAccounts(
+    public ResponseEntity<Page<AccountResponse>> getAllAccounts(
             @RequestParam(required = false) AccountType accountType,
-            @RequestParam(required = false) AccountStatus status) {
+            @RequestParam(required = false) AccountStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<AccountResponse> accounts = accountService.getAllAccounts(accountType, status);
+        Page<AccountResponse> accounts = accountService.getAllAccounts(
+                accountType,
+                status,
+                page,
+                size
+        );
+
         return ResponseEntity.ok(accounts);
     }
 

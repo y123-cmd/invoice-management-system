@@ -3,7 +3,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.repository;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor; // ADD THIS
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

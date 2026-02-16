@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +49,6 @@ public class AccountServiceImpl implements AccountService {
 
 
         String accountNumber = AccountNumberGenerator.generate();
-
-
         Account account = new Account();
         account.setAccountNumber(accountNumber);
         account.setAccountType(accountRequest.getAccountType());
@@ -82,16 +83,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAllAccounts(AccountType accountType, AccountStatus status) {
+    public Page<AccountResponse> getAllAccounts(AccountType accountType, AccountStatus status, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
         Specification<Account> spec = Specification.where(
                 AccountSpecification.hasAccountType(accountType)
         ).and(AccountSpecification.hasStatus(status));
 
-        List<Account> accounts = accountRepository.findAll(spec);
+        Page<Account> accountPage = accountRepository.findAll(spec, pageable);
 
-        return accounts.stream()
-                .map(accountMapper::toResponse)
-                .collect(Collectors.toList());
+        return accountPage.map(accountMapper::toResponse);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface AccountService {
 
     AccountResponse createAccount(AccountRequest accountRequest);
 
-    List<AccountResponse> getAllAccounts(AccountType accountType, AccountStatus accountStatus);
+    Page<AccountResponse>getAllAccounts(AccountType accountType,AccountStatus accountStatus,int page, int size);
 
     AccountResponse getAccountById(Long id);
 
