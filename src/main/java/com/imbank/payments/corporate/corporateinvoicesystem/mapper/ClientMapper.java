@@ -32,8 +32,8 @@ public class ClientMapper {
         response.setPhone(entity.getPhone());
         response.setCreditLimit(entity.getCreditLimit());
         response.setAccountStatus(entity.getAccountStatus());
-        response.setCreatedAt(entity.getCreated_at());
-        response.setUpdatedAt(entity.getUpdated_at());
+        response.setCreatedAt(entity.getCreatedAt());
+        response.setUpdatedAt(entity.getUpdatedAt());
         return response;
     }
 }
