@@ -1,5 +1,4 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.entity;
-import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,7 +45,6 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private CorporateClient client;
-
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

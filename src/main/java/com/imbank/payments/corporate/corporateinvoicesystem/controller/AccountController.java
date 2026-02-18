@@ -15,25 +15,30 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountService accountService;
+    private final AccountService accountService;//calling interface
 
-    @PostMapping
+    @PostMapping("/account")
     public ResponseEntity<AccountResponse> createAccount(
             @RequestBody AccountRequest accountRequest) {
         AccountResponse createdAccount = accountService.createAccount(accountRequest);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
+    @PostMapping("/accounts")
+    public ResponseEntity<?> createAccounts(
+            @RequestBody List<AccountRequest> accountRequest) {
+        return new ResponseEntity<>("Accounts Created", HttpStatus.CREATED);
+    }
 
-    @GetMapping
+    @GetMapping("/accounts")
     public ResponseEntity<Page<AccountResponse>> getAllAccounts(
             @RequestParam(required = false) AccountType accountType,
             @RequestParam(required = false) AccountStatus status,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<AccountResponse> accounts = accountService.getAllAccounts(
@@ -48,14 +53,14 @@ public class AccountController {
 
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/account/{id}")
     public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id) {
         AccountResponse account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
 
 
-    @GetMapping("/client/{clientId}")
+    @GetMapping("/accounts/client/{clientId}")
     public ResponseEntity<List<AccountResponse>> getAccountsByClientId(
             @PathVariable Long clientId) {
 
@@ -63,7 +68,7 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/account/{id}")
     public ResponseEntity<AccountResponse> updateAccount(
             @PathVariable Long id,
             @RequestBody AccountRequest accountRequest) {
@@ -73,12 +78,13 @@ public class AccountController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/account/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
-    @PatchMapping("/{id}/status")
+
+    @PatchMapping("/account/{id}/status")
     public ResponseEntity<AccountResponse> updateAccountStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> request) {

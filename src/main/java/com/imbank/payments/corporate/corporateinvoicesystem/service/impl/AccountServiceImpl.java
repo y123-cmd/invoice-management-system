@@ -56,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
         account.setStatus(AccountStatus.ACTIVE);
         account.setClient(client);
 
-        Account savedAccount = accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account); //save to database
 
         return accountMapper.toResponse(savedAccount);
     }
@@ -85,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Page<AccountResponse> getAllAccounts(AccountType accountType, AccountStatus status, int page, int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page-1, size);
 
         Specification<Account> spec = Specification.where(
                 AccountSpecification.hasAccountType(accountType)
