@@ -2,6 +2,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.PagedAccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
@@ -38,21 +39,22 @@ public class AccountController {
     }
 
 
+    // NEW
     @GetMapping
-    public ResponseEntity<Page<AccountResponse>> getAllAccounts(
+    public ResponseEntity<PagedAccountResponse> getAllAccounts(
             @RequestParam(required = false) AccountType accountType,
             @RequestParam(required = false) AccountStatus status,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<AccountResponse> accounts = accountService.getAllAccounts(
+        PagedAccountResponse pagedResponse = accountService.getAllAccounts(
                 accountType,
                 status,
                 page,
                 size
         );
 
-        return ResponseEntity.ok(accounts);
+        return ResponseEntity.ok(pagedResponse);
     }
 
 

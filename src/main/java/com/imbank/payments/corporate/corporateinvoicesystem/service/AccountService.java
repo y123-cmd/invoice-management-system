@@ -2,6 +2,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.service;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.PagedAccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,7 @@ public interface AccountService {
 
     AccountResponse createAccount(AccountRequest accountRequest);
 
-    Page<AccountResponse>getAllAccounts(AccountType accountType,AccountStatus accountStatus,int page, int size);
+    PagedAccountResponse getAllAccounts(AccountType accountType, AccountStatus status, int page, int size);
 
     AccountResponse getAccountById(Long id);
 

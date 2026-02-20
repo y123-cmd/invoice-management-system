@@ -2,6 +2,8 @@ package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.PagedAccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.Pagination;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
@@ -149,52 +151,35 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<AccountResponse> getAllAccounts(
-            AccountType accountType,
-            AccountStatus status,
-            int page,
-            int size) {
+    public PagedAccountResponse getAllAccounts(AccountType accountType, AccountStatus status, int page, int size) {
 
-        long startTime = System.currentTimeMillis();
+        Pageable pageable = PageRequest.of(page -1, size);
 
-        try {
-            log.info("START: Fetching accounts - Type: {}, Status: {}, Page: {}, Size: {}",
-                    accountType, status, page, size);
 
-            // Validate page number
-            if (page < 1) {
-                throw new IllegalArgumentException("Page number must be 1 or greater");
-            }
+        Specification<Account> spec = Specification.where(
+                AccountSpecification.hasAccountType(accountType)
+        ).and(AccountSpecification.hasStatus(status));
 
-            // Convert to 0-based
-            Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Account> accountPage = accountRepository.findAll(spec, pageable);
 
-            log.debug("Creating pageable - Page: {}, Size: {}", page - 1, size);
 
-            // Build specification
-            Specification<Account> spec = Specification.where(
-                    AccountSpecification.hasAccountType(accountType)
-            ).and(AccountSpecification.hasStatus(status));
+        List<AccountResponse> accountResponses = accountPage.stream()
+                .map(accountMapper::toResponse)
+                .collect(Collectors.toList());
 
-            // Query database
-            Page<Account> accountPage = accountRepository.findAll(spec, pageable);
+        Pagination pagination = new Pagination(
+                accountPage.getSize(),
+                accountPage.getNumber() + 1,
+                (int) accountPage.getTotalElements(),
+                accountPage.getTotalPages()
+        );
 
-            log.info("SUCCESS: Found {} accounts out of {} total on page {}",
-                    accountPage.getNumberOfElements(),
-                    accountPage.getTotalElements(),
-                    page);
-
-            // Convert and return
-            return accountPage.map(accountMapper::toResponse);
-
-        }  catch (Exception e) {
-            log.error("FAILED: Error fetching accounts - Error: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch accounts", e);
-
-        } finally {
-            long duration = System.currentTimeMillis() - startTime;
-            log.info("END: Account fetch completed in {}ms", duration);
-        }
+        return new PagedAccountResponse(
+                200,
+                "OK",
+                accountResponses,
+                pagination
+        );
     }
 
     @Override
