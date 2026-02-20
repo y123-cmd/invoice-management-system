@@ -1,6 +1,5 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.entity;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.entity.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,8 +20,19 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
+    @ManyToMany
+    @JoinTable(
+            name = "account_signatory",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "signatory_id")
+    )
+    private List<Signatory> signatories;
+
     @Column(nullable = false, unique = true, length = 20)
     private String accountNumber;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

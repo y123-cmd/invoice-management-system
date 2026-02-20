@@ -6,6 +6,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,22 +14,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/api/v1/clients")
+@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
-
     @PostMapping
-    public ResponseEntity<ClientResponse> createClient(
+    public ResponseEntity<ClientResponse> createClients(
             @Valid @RequestBody ClientRequest clientRequest) {
 
         ClientResponse created = clientService.createClient(clientRequest);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
+
+    @PostMapping("/batch")
+    public ResponseEntity<ClientResponse> createClientsBatch(
+            @Valid @RequestBody ClientRequest clientRequest) {
+
+        ClientResponse created = clientService.createClient(clientRequest);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+
 
     @GetMapping
     public ResponseEntity<List<ClientResponse>> getAllClients(

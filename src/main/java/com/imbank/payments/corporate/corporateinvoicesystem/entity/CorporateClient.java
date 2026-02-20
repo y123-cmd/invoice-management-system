@@ -1,17 +1,9 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.entity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,6 +17,8 @@ public class CorporateClient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
+    @Column(nullable = false)
+    private boolean deleted = false;
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName;
     @Column(name = "registration_number",unique = true,nullable = false,length = 100)
@@ -42,17 +36,19 @@ public class CorporateClient {
     @Column(name = "client_type", nullable = false)
     private ClientType clientType;
     @Column(name = "created_at",nullable = false,  updatable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "client")
+    private List<Account> accounts;
     @PrePersist
     protected void onCreate() {
-        this.created_at = LocalDateTime.now();
-        this.updated_at = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
     @PreUpdate
     protected void onUpdate() {
-        this.updated_at = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
 
