@@ -1,5 +1,6 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.dto;
 
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

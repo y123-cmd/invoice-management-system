@@ -1,6 +1,6 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.mapper;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import org.springframework.stereotype.Component;
 

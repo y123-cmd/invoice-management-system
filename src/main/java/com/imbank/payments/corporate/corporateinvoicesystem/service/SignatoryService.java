@@ -1,7 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryRequest;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 
 import java.util.List;
 

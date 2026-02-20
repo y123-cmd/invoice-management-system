@@ -1,4 +1,4 @@
-package com.imbank.payments.corporate.corporateinvoicesystem.dto;
+package com.imbank.payments.corporate.corporateinvoicesystem.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

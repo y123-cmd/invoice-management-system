@@ -1,11 +1,10 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountRequest;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.PagedAccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.imbank.payments.corporate.corporateinvoicesystem.dto;
+package com.imbank.payments.corporate.corporateinvoicesystem.dto.response;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;

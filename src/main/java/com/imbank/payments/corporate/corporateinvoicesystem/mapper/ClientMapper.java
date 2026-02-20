@@ -1,7 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.mapper;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.ClientRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import org.springframework.stereotype.Component;
 

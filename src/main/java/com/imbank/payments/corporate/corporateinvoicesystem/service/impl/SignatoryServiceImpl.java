@@ -1,7 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryRequest;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Signatory;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.DuplicateResourceException;
