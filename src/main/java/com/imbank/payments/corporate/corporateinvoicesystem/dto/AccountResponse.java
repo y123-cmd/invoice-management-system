@@ -13,6 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AccountResponse {
 
+    private int status;
+    private String message;
+    private List<AccountDto> data;
+    private Pagination pagination;
+
     private Long accountId;
     private String accountNumber;
     private AccountType accountType;
@@ -23,3 +28,4 @@ public class AccountResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
+

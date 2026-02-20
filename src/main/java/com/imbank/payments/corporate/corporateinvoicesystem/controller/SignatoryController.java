@@ -3,6 +3,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.SignatoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/signatories")
+@RequestMapping("/api/v1/signatories")
 @RequiredArgsConstructor
 public class SignatoryController {
 
@@ -23,6 +24,12 @@ public class SignatoryController {
             @RequestBody SignatoryRequest request) {
         SignatoryResponse response = signatoryService.createSignatory(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    @PostMapping("/batch")
+    public ResponseEntity<List<SignatoryResponse>> createSignatoriesBatch(
+            @Valid @RequestBody List<SignatoryRequest> requests) {
+        List<SignatoryResponse> responses = signatoryService.createSignatoriesBatch(requests);
+        return new ResponseEntity<>(responses, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -70,7 +77,7 @@ public class SignatoryController {
     @GetMapping("/account/{accountId}")
     public ResponseEntity<List<SignatoryResponse>> getSignatoriesByAccount(
             @PathVariable Long accountId) {
-        List<SignatoryResponse> signatories = signatoryService.getSignatoriesByAccount(accountId);
+         List<SignatoryResponse> signatories = signatoryService.getSignatoriesByAccount(accountId);
         return ResponseEntity.ok(signatories);
     }
 }

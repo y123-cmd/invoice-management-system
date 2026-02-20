@@ -5,6 +5,7 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,20 +22,23 @@ public class AccountController {
 
     private final AccountService accountService;//calling interface
 
-    @PostMapping("/account")
+    @PostMapping
     public ResponseEntity<AccountResponse> createAccount(
-            @RequestBody AccountRequest accountRequest) {
-        AccountResponse createdAccount = accountService.createAccount(accountRequest);
-        return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
+            @Valid @RequestBody AccountRequest accountRequest) {
+
+        AccountResponse created = accountService.createAccount(accountRequest);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+    @PostMapping("/batch")
+    public ResponseEntity<List<AccountResponse>> createAccountsBatch(
+            @Valid @RequestBody List<AccountRequest> accountRequests) {
+
+        List<AccountResponse> created = accountService.createAccountsBatch(accountRequests);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PostMapping("/accounts")
-    public ResponseEntity<?> createAccounts(
-            @RequestBody List<AccountRequest> accountRequest) {
-        return new ResponseEntity<>("Accounts Created", HttpStatus.CREATED);
-    }
 
-    @GetMapping("/accounts")
+    @GetMapping
     public ResponseEntity<Page<AccountResponse>> getAllAccounts(
             @RequestParam(required = false) AccountType accountType,
             @RequestParam(required = false) AccountStatus status,
@@ -53,14 +57,14 @@ public class AccountController {
 
 
 
-    @GetMapping("/account/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id) {
         AccountResponse account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
 
 
-    @GetMapping("/accounts/client/{clientId}")
+    @GetMapping("/client/{clientId}")
     public ResponseEntity<List<AccountResponse>> getAccountsByClientId(
             @PathVariable Long clientId) {
 
@@ -68,23 +72,23 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
-    @PutMapping("/account/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<AccountResponse> updateAccount(
             @PathVariable Long id,
-            @RequestBody AccountRequest accountRequest) {
+            @Valid @RequestBody AccountRequest accountRequest) {
 
         AccountResponse updatedAccount = accountService.updateAccount(id, accountRequest);
         return ResponseEntity.ok(updatedAccount);
     }
 
 
-    @DeleteMapping("/account/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/account/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<AccountResponse> updateAccountStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> request) {

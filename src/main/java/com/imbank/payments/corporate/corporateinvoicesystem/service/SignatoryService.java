@@ -9,6 +9,8 @@ public interface SignatoryService {
 
     SignatoryResponse createSignatory(SignatoryRequest request);
 
+    List<SignatoryResponse> createSignatoriesBatch(List<SignatoryRequest> requests);
+
     List<SignatoryResponse> getAllSignatories();
 
     SignatoryResponse getSignatoryById(Long id);

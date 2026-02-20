@@ -17,6 +17,8 @@ public class CorporateClient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
+    @Column(nullable = false)
+    private boolean deleted = false;
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName;
     @Column(name = "registration_number",unique = true,nullable = false,length = 100)

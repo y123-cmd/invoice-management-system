@@ -22,5 +22,7 @@ public interface AccountService {
 
     AccountResponse updateAccountStatus(Long id, AccountStatus status);
 
+    List<AccountResponse> createAccountsBatch(List<AccountRequest> accountRequests);
+
     void deleteAccount(Long id);
 }

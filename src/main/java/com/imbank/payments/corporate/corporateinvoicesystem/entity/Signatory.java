@@ -20,6 +20,8 @@ public class Signatory {
     private long signatoryId;
     @Column(nullable = false, length = 100)
     private String name;
+    @Column(nullable = false)
+    private boolean deleted = false;
     @Column(nullable = false,length = 100)
     private String position;//CEO,CFO,FINANCIAL MANAGER
     @Column(nullable = false, length = 100)

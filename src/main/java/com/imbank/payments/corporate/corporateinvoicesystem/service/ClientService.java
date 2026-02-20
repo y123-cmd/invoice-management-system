@@ -11,6 +11,8 @@ public interface ClientService {
 
     ClientResponse createClient(ClientRequest request);
 
+    List<ClientResponse> createClientsBatch(List<ClientRequest> requests);
+
     List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType,String companyName);
 
     ClientResponse getClientById(Long id);

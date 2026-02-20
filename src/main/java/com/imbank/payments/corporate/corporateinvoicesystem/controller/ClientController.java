@@ -15,22 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/clients")
+@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
-
-    @PostMapping("/client")
-    public ResponseEntity<ClientResponse> createClient(
-            @Valid @RequestBody ClientRequest clientRequest) {
-
-        ClientResponse created = clientService.createClient(clientRequest);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
-    }
-    @PostMapping("/clients")
+    @PostMapping
     public ResponseEntity<ClientResponse> createClients(
             @Valid @RequestBody ClientRequest clientRequest) {
 
@@ -38,8 +28,17 @@ public class ClientController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<ClientResponse> createClientsBatch(
+            @Valid @RequestBody ClientRequest clientRequest) {
 
-    @GetMapping("/clients")
+        ClientResponse created = clientService.createClient(clientRequest);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+
+
+    @GetMapping
     public ResponseEntity<List<ClientResponse>> getAllClients(
             @RequestParam(required = false) AccountStatus status,
             @RequestParam(required = false) ClientType clientType,
@@ -49,13 +48,13 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
-    @GetMapping("/client/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ClientResponse> getClientById(@PathVariable Long id) {
         ClientResponse client = clientService.getClientById(id);
         return ResponseEntity.ok(client);
     }
 
-    @PutMapping("/client/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ClientResponse> updateClient(
             @PathVariable Long id,
             @Valid @RequestBody ClientRequest clientRequest) {
@@ -64,20 +63,20 @@ public class ClientController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/client/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
     }
 
 
-    @GetMapping("/clients/active")
+    @GetMapping("/active")
     public ResponseEntity<List<ClientResponse>> getActiveClients() {
         List<ClientResponse> activeClients = clientService.getActiveClients();
         return ResponseEntity.ok(activeClients);
     }
 
-    @PatchMapping("client/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<ClientResponse> updateClientStatus(
             @PathVariable Long id,
             @RequestBody AccountStatus status) {
@@ -86,7 +85,7 @@ public class ClientController {
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/client/registration/{regNumber}")
+    @GetMapping("/registration/{regNumber}")
     public ResponseEntity<ClientResponse> findByRegistrationNumber(
             @PathVariable String regNumber) {
 

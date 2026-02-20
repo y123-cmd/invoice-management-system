@@ -31,6 +31,9 @@ public class Account {
     @Column(nullable = false, unique = true, length = 20)
     private String accountNumber;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountType accountType;
