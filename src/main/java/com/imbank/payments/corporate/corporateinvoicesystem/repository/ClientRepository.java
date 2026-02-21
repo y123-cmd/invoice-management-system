@@ -15,6 +15,13 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<CorporateClient, Long>,
         JpaSpecificationExecutor<CorporateClient> {
 
+    @Query("SELECT c FROM CorporateClient c WHERE c.deleted = false")
+    List<CorporateClient> findAll();
+
+    @Query("SELECT c FROM CorporateClient c WHERE c.clientId = :id AND c.deleted = false")
+    Optional<CorporateClient> findById(@Param("id") Long id);
+
+
     @Query("SELECT c FROM CorporateClient c WHERE c.deleted = false AND c.accountStatus = :accountStatus")
     List<CorporateClient> findByAccountStatus(@Param("accountStatus") AccountStatus accountStatus);
 

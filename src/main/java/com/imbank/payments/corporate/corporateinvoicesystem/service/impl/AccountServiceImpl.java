@@ -2,7 +2,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.PagedAccountResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedAccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.Pagination;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;

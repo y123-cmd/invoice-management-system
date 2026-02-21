@@ -20,10 +20,8 @@ public class Signatory {
     private long signatoryId;
     @Column(nullable = false, length = 100)
     private String name;
-    @Column(nullable = false)
-    private boolean deleted = false;
     @Column(nullable = false,length = 100)
-    private String position;//CEO,CFO,FINANCIAL MANAGER
+    private String position;//CEO,CFO,CHIEF FINANCIAL OFFICER
     @Column(nullable = false, length = 100)
     private String email;
     @Column(length = 100)
@@ -33,6 +31,8 @@ public class Signatory {
     @ManyToMany(mappedBy = "signatories")
     @JsonIgnore
     private List<Account> accounts;
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)

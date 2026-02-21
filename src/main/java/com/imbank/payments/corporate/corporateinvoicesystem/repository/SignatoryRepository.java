@@ -6,11 +6,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface SignatoryRepository extends JpaRepository<Signatory, Long> {
 
+
+    @Query("SELECT s FROM Signatory s WHERE s.deleted = false")
+    List<Signatory> findAll();
+
+
+    @Query("SELECT s FROM Signatory s WHERE s.signatoryId = :id AND s.deleted = false")
+    Optional<Signatory> findById(@Param("id") Long id);
 
 
     @Query("SELECT s FROM Signatory s WHERE s.deleted = false AND s.email = :email")
