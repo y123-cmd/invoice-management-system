@@ -1,6 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountStatusUpdateRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedAccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
@@ -126,10 +127,9 @@ public class AccountController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<AccountResponse> updateAccountStatus(
             @Parameter(description = "Account ID") @PathVariable Long id,
-            @RequestBody Map<String, String> request) {
-
-        String status = request.get("status");
-        AccountResponse updated = accountService.updateAccountStatus(id, AccountStatus.valueOf(status));
+            @RequestBody @Valid AccountStatusUpdateRequest request) {
+        AccountResponse updated = accountService
+                .updateAccountStatus(id, AccountStatus.valueOf(request.getStatus()));
         return ResponseEntity.ok(updated);
     }
 }
