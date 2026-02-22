@@ -1,6 +1,8 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.Pagination;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedSignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Signatory;
@@ -12,6 +14,9 @@ import com.imbank.payments.corporate.corporateinvoicesystem.repository.Signatory
 import com.imbank.payments.corporate.corporateinvoicesystem.service.SignatoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,29 +116,29 @@ public class SignatoryServiceImpl implements SignatoryService {
     }
 
     @Override
-    public List<SignatoryResponse> getAllSignatories() {
+    public PagedSignatoryResponse getAllSignatories(int page, int size) {
 
-        long startTime = System.currentTimeMillis();
-
-        try {
-            log.info("START: Fetching all signatories");
-
-            List<Signatory> signatories = signatoryRepository.findAll();
-
-            log.info("SUCCESS: Found {} signatories", signatories.size());
-
-            return signatories.stream()
-                    .map(signatoryMapper::toResponse)
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            log.error("FAILED: Error fetching signatories - {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch signatories", e);
-
-        } finally {
-            long duration = System.currentTimeMillis() - startTime;
-            log.info("END: Fetch all signatories completed in {}ms", duration);
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be 1 or greater");
         }
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<Signatory> signatoryPage = signatoryRepository.findAll(pageable);
+
+        List<SignatoryResponse> signatories = signatoryPage.getContent()
+                .stream()
+                .map(signatoryMapper::toResponse)
+                .collect(Collectors.toList());
+
+        Pagination pagination = new Pagination(
+                size,
+                page,
+                (int) signatoryPage.getTotalElements(),
+                signatoryPage.getTotalPages()
+        );
+
+        return new PagedSignatoryResponse(200, "OK", signatories, pagination);
     }
 
     @Override

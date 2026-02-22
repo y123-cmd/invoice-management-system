@@ -1,7 +1,9 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.Pagination;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
@@ -12,10 +14,13 @@ import com.imbank.payments.corporate.corporateinvoicesystem.repository.ClientRep
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
 import com.imbank.payments.corporate.corporateinvoicesystem.specification.ClientSpecification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,19 +117,40 @@ public class ClientServiceImpl implements ClientService {
 
         return responses;
     }
+@Override
+    public PagedClientResponse getAllClients(
+            AccountStatus accountStatus,
+            ClientType clientType,
+            String companyName,
+            int page,
+            int size) {
 
-    @Override
-    public List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType, String companyName) {
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be 1 or greater");
+        }
 
-        Specification<CorporateClient> spec = Specification.where(
-                        ClientSpecification.hasAccountStatus(accountStatus))
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Specification<CorporateClient> spec = Specification
+                .where(ClientSpecification.hasAccountStatus(accountStatus))
                 .and(ClientSpecification.hasClientType(clientType))
                 .and(ClientSpecification.hasCompanyNameContaining(companyName));
 
-        return clientRepository.findAll(spec)
+        Page<CorporateClient> clientPage = clientRepository.findAll(spec, pageable);
+
+        List<ClientResponse> clients = clientPage.getContent()
                 .stream()
                 .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
+
+    Pagination pagination = new Pagination(
+            size,
+            page,
+            (int) clientPage.getTotalElements(),
+            clientPage.getTotalPages()
+    );
+
+        return new PagedClientResponse(200, "OK", clients, pagination);
     }
 
     @Override

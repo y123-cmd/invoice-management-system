@@ -1,6 +1,8 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.repository;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Signatory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,12 +16,13 @@ public interface SignatoryRepository extends JpaRepository<Signatory, Long> {
 
 
     @Query("SELECT s FROM Signatory s WHERE s.deleted = false")
-    List<Signatory> findAll();
+    Page<Signatory> findAll(Pageable pageable);
 
+    @Query("SELECT s FROM Signatory s WHERE s.deleted = false")
+    List<Signatory> findAll();
 
     @Query("SELECT s FROM Signatory s WHERE s.signatoryId = :id AND s.deleted = false")
     Optional<Signatory> findById(@Param("id") Long id);
-
 
     @Query("SELECT s FROM Signatory s WHERE s.deleted = false AND s.email = :email")
     Optional<Signatory> findByEmail(@Param("email") String email);

@@ -1,6 +1,7 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedSignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.SignatoryService;
 
@@ -48,18 +49,16 @@ public class SignatoryController {
         return new ResponseEntity<>(responses, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get all signatories", description = "Retrieves all signatories")
-    @GetMapping
-    public ResponseEntity<List<SignatoryResponse>> getAllSignatories() {
-        List<SignatoryResponse> signatories = signatoryService.getAllSignatories();
+    @Operation(summary = "Get all signatories", description = "Retrieves all signatories")@GetMapping
+    public ResponseEntity<PagedSignatoryResponse> getAllSignatories(
+            @Parameter(description = "Page number")
+            @RequestParam(defaultValue = "1") int page,
+            @Parameter(description = "Page size")
+            @RequestParam(defaultValue = "10") int size) {
+
+        PagedSignatoryResponse signatories = signatoryService.getAllSignatories(page, size);
         return ResponseEntity.ok(signatories);
     }
-
-    @Operation(summary = "Get signatory by ID", description = "Retrieves a single signatory by ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Signatory found"),
-            @ApiResponse(responseCode = "404", description = "Signatory not found")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<SignatoryResponse> getSignatoryById(
             @Parameter(description = "Signatory ID") @PathVariable Long id) {

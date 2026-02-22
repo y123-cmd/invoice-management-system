@@ -2,6 +2,7 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,12 +55,20 @@ public class ClientController {
 
     @Operation(summary = "Get all clients", description = "Retrieves all clients with optional filters")
     @GetMapping
-    public ResponseEntity<List<ClientResponse>> getAllClients(
-            @Parameter(description = "Filter by status") @RequestParam(required = false) AccountStatus status,
-            @Parameter(description = "Filter by client type") @RequestParam(required = false) ClientType clientType,
-            @Parameter(description = "Filter by company name") @RequestParam(required = false) String companyName) {
+    public ResponseEntity<PagedClientResponse> getAllClients(
+            @Parameter(description = "Filter by status")
+            @RequestParam(required = false) AccountStatus status,
+            @Parameter(description = "Filter by client type")
+            @RequestParam(required = false) ClientType clientType,
+            @Parameter(description = "Filter by company name")
+            @RequestParam(required = false) String companyName,
+            @Parameter(description = "Page number")
+            @RequestParam(defaultValue = "1") int page,
+            @Parameter(description = "Page size")
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<ClientResponse> clients = clientService.getAllClients(status, clientType, companyName);
+        PagedClientResponse clients = clientService
+                .getAllClients(status, clientType, companyName, page, size);
         return ResponseEntity.ok(clients);
     }
 
