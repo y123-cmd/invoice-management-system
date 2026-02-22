@@ -44,10 +44,10 @@ public class ClientController {
 
     @Operation(summary = "Create clients in batch", description = "Creates multiple clients at once")
     @PostMapping("/batch")
-    public ResponseEntity<ClientResponse> createClientsBatch(
-            @Valid @RequestBody ClientRequest clientRequest) {
+    public ResponseEntity<List<ClientResponse>> createClientsBatch(
+            @Valid @RequestBody List<ClientRequest> clientRequests) {
 
-        ClientResponse created = clientService.createClient(clientRequest);
+        List <ClientResponse> created = clientService.createClientsBatch(clientRequests);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
