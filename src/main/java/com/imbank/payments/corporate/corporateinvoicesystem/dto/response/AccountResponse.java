@@ -1,4 +1,4 @@
-package com.imbank.payments.corporate.corporateinvoicesystem.dto;
+package com.imbank.payments.corporate.corporateinvoicesystem.dto.response;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountType;
@@ -12,11 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountResponse {
-
-    private int status;
-    private String message;
-    private List<AccountDto> data;
-    private Pagination pagination;
 
     private Long accountId;
     private String accountNumber;

@@ -17,8 +17,6 @@ public class CorporateClient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
-    @Column(nullable = false)
-    private boolean deleted = false;
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName;
     @Column(name = "registration_number",unique = true,nullable = false,length = 100)
@@ -27,6 +25,8 @@ public class CorporateClient {
     private String email;
     @Column(name = "phone",length = 20)
     private String phone;
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
     @Column(name = "credit_limit",nullable = false,precision = 15,scale = 2)
     private BigDecimal creditLimit;
     @Enumerated(EnumType.STRING)

@@ -1,9 +1,11 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientRequest;
-import com.imbank.payments.corporate.corporateinvoicesystem.dto.ClientResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.ClientRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientResponse;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ public interface ClientService {
 
     List<ClientResponse> createClientsBatch(List<ClientRequest> requests);
 
-    List<ClientResponse> getAllClients(AccountStatus accountStatus, ClientType clientType,String companyName);
+    PagedClientResponse getAllClients(AccountStatus accountStatus, ClientType clientType, String companyName, int page, int size);
 
     ClientResponse getClientById(Long id);
 
