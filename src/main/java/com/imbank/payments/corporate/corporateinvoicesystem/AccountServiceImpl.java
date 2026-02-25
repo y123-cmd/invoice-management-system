@@ -1,4 +1,4 @@
-package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
+package com.imbank.payments.corporate.corporateinvoicesystem;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
@@ -51,10 +51,11 @@ public class AccountServiceImpl implements AccountService {
                     accountRequest.getClientId(),
                     accountRequest.getAccountType());
 
-            // Step 1: Check client exists
             CorporateClient client = clientRepository.findById(accountRequest.getClientId())
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Client", "id", accountRequest.getClientId()
+
+
                     ));
 
             log.debug("Client found: {}", client.getCompanyName());
