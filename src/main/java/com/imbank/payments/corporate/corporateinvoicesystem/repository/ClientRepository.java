@@ -1,5 +1,6 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.repository;
 
+import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.CorporateClient;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,6 @@ public interface ClientRepository extends JpaRepository<CorporateClient, Long>,
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CorporateClient c WHERE c.deleted = false AND c.registrationNumber = :registrationNumber")
     boolean existsByRegistrationNumber(@Param("registrationNumber") String registrationNumber);
+
+    Optional<Account> findByEmail(String email);
 }
