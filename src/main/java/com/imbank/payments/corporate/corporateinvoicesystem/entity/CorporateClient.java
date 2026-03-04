@@ -2,18 +2,19 @@ package com.imbank.payments.corporate.corporateinvoicesystem.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
 @Table(name = "corporate_client")
-public class CorporateClient {
+public class CorporateClient extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientId;
@@ -25,8 +26,6 @@ public class CorporateClient {
     private String email;
     @Column(name = "phone",length = 20)
     private String phone;
-    @Column(name = "deleted", nullable = false)
-    private Boolean deleted = false;
     @Column(name = "credit_limit",nullable = false,precision = 15,scale = 2)
     private BigDecimal creditLimit;
     @Enumerated(EnumType.STRING)
@@ -35,22 +34,7 @@ public class CorporateClient {
     @Enumerated(EnumType.STRING)
     @Column(name = "client_type", nullable = false)
     private ClientType clientType;
-    @Column(name = "created_at",nullable = false,  updatable = false)
-    private LocalDateTime createdAt;
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "client")
     private List<Account> accounts;
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-
 
 }
