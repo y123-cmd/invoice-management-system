@@ -1,6 +1,5 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.ClientServiceImpl;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.ClientRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
