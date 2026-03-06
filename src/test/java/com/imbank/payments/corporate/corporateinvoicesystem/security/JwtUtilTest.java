@@ -33,7 +33,7 @@ public class JwtUtilTest {
         assertFalse(token.isEmpty());
         }
         @Test
-    void ShouldExtractEmail() {
+    void shouldExtractEmail() {
             String email = "yvonne@gmail.com";
             String token = jwtUtil.generateToken(email);
             String extractedEmail = jwtUtil.extractEmail(token);
@@ -78,11 +78,8 @@ public class JwtUtilTest {
        String token = jwtUtil.generateToken(email);
        String tamperedToken = token + "tampered";
 
-       Exception exception = assertThrows(Exception.class, ()->
+       assertThrows(Exception.class, ()->
                jwtUtil.extractEmail(tamperedToken));
-
-        System.out.println("Actual exception: " + exception.getClass().getName());
-        System.out.println("Message: " + exception.getMessage());
     }
 
 }
