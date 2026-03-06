@@ -136,7 +136,7 @@ class ClientServiceImplTest {
 
         clientService.deleteClient(clientId);
 
-        assertTrue(mockClient.getDeleted());
+        assertTrue(mockClient.isDeleted());
 
 
         verify(clientRepository).findById(clientId);
