@@ -193,10 +193,10 @@ public class AccountControllerTest {
                 List.of(buildAccountResponse()),
                 null
         );
-        when(accountService.getAllAccounts(null,null,0,10))
+        when(accountService.getAllAccounts(null,null,1,10))
                 .thenReturn(pagedResponse);
         mockMvc.perform(get("/api/v1/accounts")
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].accountNumber").value("ACC12345"));
