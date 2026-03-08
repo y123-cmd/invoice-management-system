@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtAuthenticationFilter;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtUtil;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.SignatoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SignatoryController.class)
+@ActiveProfiles("test")
 public class SignatoryControllerTest {
 
     @Autowired
@@ -32,6 +36,12 @@ public class SignatoryControllerTest {
 
     @MockBean
     private SignatoryService signatoryService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private SignatoryResponse buildSignatoryResponse() {
         SignatoryResponse response = new SignatoryResponse();

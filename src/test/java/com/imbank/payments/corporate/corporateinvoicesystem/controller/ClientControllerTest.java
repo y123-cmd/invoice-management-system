@@ -6,12 +6,15 @@ import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.ClientR
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.AccountStatus;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.ClientType;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtAuthenticationFilter;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtUtil;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.ClientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
+@ActiveProfiles("test")
 public class ClientControllerTest {
 
     @Autowired
@@ -35,6 +39,12 @@ public class ClientControllerTest {
 
     @MockBean
     private ClientService clientService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private ClientResponse buildClientResponse() {
         ClientResponse response = new ClientResponse();
