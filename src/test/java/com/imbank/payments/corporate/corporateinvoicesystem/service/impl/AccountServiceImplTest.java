@@ -1,6 +1,5 @@
 package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
-import com.imbank.payments.corporate.corporateinvoicesystem.AccountServiceImpl;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.AccountRequest;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.AccountResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.entity.Account;
@@ -20,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -248,6 +248,119 @@ class AccountServiceImplTest {
 
         verify(accountRepository).findById(accountId);
         verify(accountRepository, never()).save(any()); // ← never saved!
+    }
+    @Test
+    void getAccountsByClientId_ShouldReturnAccounts_WhenClientExists() {
+        Account mockAccount = new Account();
+        mockAccount.setAccountId(1L);
+        mockAccount.setAccountNumber("ACC123456");
+
+        AccountResponse mockResponse = new AccountResponse();
+        mockResponse.setAccountId(1L);
+        mockResponse.setAccountNumber("ACC123456");
+
+        when(accountRepository.findByClient_ClientId(1L))
+                .thenReturn(List.of(mockAccount));
+        when(accountMapper.toResponse(mockAccount)).thenReturn(mockResponse);
+
+        List<AccountResponse> result = accountService.getAccountsByClientId(1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(accountRepository).findByClient_ClientId(1L);
+    }
+    @Test
+    void updateAccount_ShouldReturnUpdatedResponse_WhenAccountExists() {
+        Long accountId = 1L;
+        AccountRequest request = new AccountRequest();
+        request.setAccountType(AccountType.SAVINGS);
+        request.setBalance(new BigDecimal("60000.00"));
+
+        Account mockAccount = new Account();
+        mockAccount.setAccountId(accountId);
+        mockAccount.setAccountNumber("ACC123456");
+
+        AccountResponse mockResponse = new AccountResponse();
+        mockResponse.setAccountId(accountId);
+        mockResponse.setAccountNumber("ACC123456");
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(mockAccount));
+        when(accountRepository.save(mockAccount)).thenReturn(mockAccount);
+        when(accountMapper.toResponse(mockAccount)).thenReturn(mockResponse);
+
+        AccountResponse result = accountService.updateAccount(accountId, request);
+
+        assertNotNull(result);
+        assertEquals("ACC123456", result.getAccountNumber());
+        verify(accountRepository).save(mockAccount);
+    }
+    @Test
+    void updateAccount_ShouldThrowException_WhenAccountNotFound() {
+        when(accountRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> accountService.updateAccount(999L, new AccountRequest()));
+
+        verify(accountRepository, never()).save(any());
+    }
+
+    @Test
+    void updateAccountStatus_ShouldReturnUpdatedResponse_WhenAccountExists() {
+        Account mockAccount = new Account();
+        mockAccount.setAccountId(1L);
+        mockAccount.setStatus(AccountStatus.ACTIVE);
+
+        AccountResponse mockResponse = new AccountResponse();
+        mockResponse.setAccountId(1L);
+        mockResponse.setStatus(AccountStatus.SUSPENDED);
+
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(mockAccount));
+        when(accountRepository.save(mockAccount)).thenReturn(mockAccount);
+        when(accountMapper.toResponse(mockAccount)).thenReturn(mockResponse);
+
+        AccountResponse result = accountService.updateAccountStatus(1L, AccountStatus.SUSPENDED);
+
+        assertNotNull(result);
+        assertEquals(AccountStatus.SUSPENDED, result.getStatus());
+        verify(accountRepository).save(mockAccount);
+    }
+    @Test
+    void updateAccountStatus_ShouldThrowException_WhenAccountNotFound() {
+        when(accountRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> accountService.updateAccountStatus(999L, AccountStatus.SUSPENDED));
+
+        verify(accountRepository, never()).save(any());
+    }
+    @Test
+    void createAccountsBatch_ShouldReturnResponses_WhenAccountsCreated() {
+        Long clientId = 1L;
+        AccountRequest request = new AccountRequest();
+        request.setClientId(clientId);
+        request.setAccountType(AccountType.SAVINGS);
+        request.setBalance(new BigDecimal("50000.00"));
+
+        CorporateClient mockClient = new CorporateClient();
+        mockClient.setClientId(clientId);
+
+        Account mockAccount = new Account();
+        mockAccount.setAccountId(1L);
+        mockAccount.setAccountNumber("ACC123456");
+
+        AccountResponse mockResponse = new AccountResponse();
+        mockResponse.setAccountId(1L);
+        mockResponse.setAccountNumber("ACC123456");
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(mockClient));
+        when(accountRepository.save(any(Account.class))).thenReturn(mockAccount);
+        when(accountMapper.toResponse(mockAccount)).thenReturn(mockResponse);
+
+        List<AccountResponse> result = accountService.createAccountsBatch(List.of(request));
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("ACC123456", result.get(0).getAccountNumber());
     }
 
 }

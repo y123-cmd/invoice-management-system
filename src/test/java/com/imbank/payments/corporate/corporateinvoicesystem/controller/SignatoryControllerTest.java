@@ -2,26 +2,37 @@ package com.imbank.payments.corporate.corporateinvoicesystem.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
+import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.PagedSignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.response.SignatoryResponse;
 import com.imbank.payments.corporate.corporateinvoicesystem.exception.ResourceNotFoundException;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.CustomUserDetailsService;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtAuthenticationFilter;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.JwtUtil;
+import com.imbank.payments.corporate.corporateinvoicesystem.security.SecurityConfig;
 import com.imbank.payments.corporate.corporateinvoicesystem.service.SignatoryService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SignatoryController.class)
+@ActiveProfiles("test")
+@Import(SecurityConfig.class)
 public class SignatoryControllerTest {
 
     @Autowired
@@ -32,6 +43,24 @@ public class SignatoryControllerTest {
 
     @MockBean
     private SignatoryService signatoryService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        Mockito.doAnswer(invocation -> {
+            jakarta.servlet.FilterChain chain = invocation.getArgument(2);
+            chain.doFilter(invocation.getArgument(0), invocation.getArgument(1));
+            return null;
+        }).when(jwtAuthenticationFilter).doFilter(any(), any(), any());
+    }
 
     private SignatoryResponse buildSignatoryResponse() {
         SignatoryResponse response = new SignatoryResponse();
@@ -55,6 +84,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createSignatory_ShouldReturn201_WhenSignatoryIsCreated() throws Exception {
         when(signatoryService.createSignatory(any(SignatoryRequest.class)))
                 .thenReturn(buildSignatoryResponse());
@@ -68,6 +98,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getSignatoryById_ShouldReturn200_WhenSignatoryExists() throws Exception {
         when(signatoryService.getSignatoryById(1L)).thenReturn(buildSignatoryResponse());
 
@@ -78,6 +109,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getSignatoryById_ShouldReturn404_WhenSignatoryDoesNotExist() throws Exception {
         when(signatoryService.getSignatoryById(999L))
                 .thenThrow(new ResourceNotFoundException("Signatory not found"));
@@ -87,6 +119,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateSignatory_ShouldReturn200_WhenSignatoryIsUpdated() throws Exception {
         when(signatoryService.updateSignatory(eq(1L), any(SignatoryRequest.class)))
                 .thenReturn(buildSignatoryResponse());
@@ -99,6 +132,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteSignatory_ShouldReturn200_WhenSignatoryIsDeleted() throws Exception {
         doNothing().when(signatoryService).deleteSignatory(1L);
 
@@ -108,6 +142,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void addSignatoryToAccount_ShouldReturn200_WhenSuccessful() throws Exception {
         doNothing().when(signatoryService).addSignatoryToAccount(1L, 1L);
 
@@ -117,6 +152,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void removeSignatoryFromAccount_ShouldReturn200_WhenSuccessful() throws Exception {
         doNothing().when(signatoryService).removeSignatoryFromAccount(1L, 1L);
 
@@ -126,6 +162,7 @@ public class SignatoryControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getSignatoriesByAccount_ShouldReturn200_WhenAccountExists() throws Exception {
         when(signatoryService.getSignatoriesByAccount(1L))
                 .thenReturn(List.of(buildSignatoryResponse()));
@@ -134,4 +171,37 @@ public class SignatoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name").value("John Doe"));
     }
+    @Test
+    @WithMockUser
+    void createSignatoriesBatch_ShouldReturn201_WhenSignatoriesAreCreated()throws Exception{
+        List<SignatoryRequest> requests = List.of(buildSignatoryRequest());
+        when(signatoryService.createSignatoriesBatch(anyList()))
+                .thenReturn(List.of(buildSignatoryResponse()));
+        mockMvc.perform(post("/api/v1/signatories/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data[0].name").value("John Doe"));
+
+
+    }
+    @Test
+    @WithMockUser
+    void getAllSignatories_ShouldReturn200_WhenSignatoriesExists() throws Exception{
+        PagedSignatoryResponse signatoryResponse = new PagedSignatoryResponse(
+                200,
+                "Signatories Retrieved Successfully",
+                List.of(buildSignatoryResponse()),
+                null
+        );
+        when(signatoryService.getAllSignatories(1,10))
+                .thenReturn(signatoryResponse);
+
+        mockMvc.perform(get("/api/v1/signatories")
+                .param("page", "1")
+                .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.data[0].name").value("John Doe"));
+    }
+
 }

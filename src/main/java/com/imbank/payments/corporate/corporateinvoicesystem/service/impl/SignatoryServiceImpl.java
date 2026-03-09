@@ -1,4 +1,4 @@
-package com.imbank.payments.corporate.corporateinvoicesystem;
+package com.imbank.payments.corporate.corporateinvoicesystem.service.impl;
 
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.Pagination;
 import com.imbank.payments.corporate.corporateinvoicesystem.dto.request.SignatoryRequest;
